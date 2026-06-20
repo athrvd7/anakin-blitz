@@ -1,6 +1,6 @@
 import { useState, startTransition } from "react";
 
-const initialState = { thinking: [], results: [], verdict: null, loading: false, error: "" };
+const initialState = { thinking: [], results: [], verdict: null, loading: false, error: "", elapsed: 0 };
 
 function parseSse(text, onEvent) {
   for (const block of text.split("\n\n")) {
@@ -20,6 +20,7 @@ export function useQuery() {
 
   async function run(query) {
     setState({ ...initialState, loading: true });
+    const startedAt = performance.now();
 
     try {
       const response = await fetch("/api/query", {
@@ -47,8 +48,8 @@ export function useQuery() {
             setState((current) => {
               if (event === "thinking") return { ...current, thinking: [...current.thinking, data] };
               if (event === "result") return { ...current, results: [...current.results, data] };
-              if (event === "verdict") return { ...current, verdict: data };
-              if (event === "done") return { ...current, loading: false };
+              if (event === "verdict") return { ...current, verdict: data, elapsed: (performance.now() - startedAt) / 1000 };
+              if (event === "done") return { ...current, loading: false, elapsed: (performance.now() - startedAt) / 1000 };
               if (event === "error") return { ...current, error: data.message };
               return current;
             });

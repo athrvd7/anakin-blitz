@@ -8,7 +8,6 @@ You have access to these data sources via Wire API:
 - github.search_repos(query)
 - github.repo(owner, repo)
 - arxiv.search(query, limit)
-- wikipedia.summary(topic)
 
 Use concise search terms, not the full user question. For example, search "LangGraph" instead of "Is LangGraph worth using?"
 Return a JSON array of 3-6 relevant tools only. Return ONLY valid JSON."""

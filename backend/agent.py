@@ -38,7 +38,6 @@ def demo_plan(query: str, max_sources: int) -> list[dict]:
         {"type": "wire", "action": "hackernews.search", "params": {"query": q}},
         {"type": "wire", "action": "github.search_repos", "params": {"query": q}},
         {"type": "wire", "action": "arxiv.search", "params": {"query": q, "limit": 3}},
-        {"type": "wire", "action": "wikipedia.summary", "params": {"topic": q}},
     ][:max_sources]
 
 
@@ -99,6 +98,12 @@ def fallback_summary(result: dict) -> str:
     return f"{result['title']} returned live data for this query."
 
 
+def plan_reason(plan: list[dict]) -> str:
+    sources = [SOURCE_FROM_ACTION.get(tool.get("action"), tool.get("type", "source")) for tool in plan if isinstance(tool, dict)]
+    readable = ", ".join(dict.fromkeys(source.title() for source in sources))
+    return f"Selected {readable} because they cover code health, developer sentiment, and research signal."
+
+
 async def run_query(query: str, max_sources: int) -> AsyncIterator[str]:
     wire = WireClient()
     scraper = ScraperClient()
@@ -114,6 +119,7 @@ async def run_query(query: str, max_sources: int) -> AsyncIterator[str]:
     if not plan:
         plan = demo_plan(query, max_sources)
     yield sse("thinking", {"step": "tool_plan", "tools": plan})
+    yield sse("thinking", {"step": "plan_reason", "message": plan_reason(plan)})
     yield sse("thinking", {"step": "fetching", "message": f"Calling {len(plan)} sources in parallel."})
 
     summaries = []
@@ -145,5 +151,5 @@ async def run_query(query: str, max_sources: int) -> AsyncIterator[str]:
     except Exception as exc:
         yield sse("thinking", {"step": "verdict_fallback", "message": str(exc)[:160]})
         verdict = fallback_verdict(summaries)
-    yield sse("verdict", {"verdict": verdict, "confidence": "demo" if not live_mode else "medium", "sources_used": len(plan)})
+    yield sse("verdict", {"verdict": verdict, "confidence": "demo" if not live_mode else "medium", "sources_used": len(summaries)})
     yield sse("done", {})

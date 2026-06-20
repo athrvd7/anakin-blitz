@@ -24,7 +24,14 @@ export default function SearchBar({ value, setValue, onSubmit, loading }) {
       </div>
       <div className="chips">
         {examples.map((example) => (
-          <button type="button" key={example} onClick={() => setValue(example)}>
+          <button
+            type="button"
+            key={example}
+            onClick={() => {
+              setValue(example);
+              onSubmit(example);
+            }}
+          >
             {example}
           </button>
         ))}

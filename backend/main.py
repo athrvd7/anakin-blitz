@@ -44,7 +44,6 @@ def wire_catalog() -> dict:
             "github.search_repos",
             "github.repo",
             "arxiv.search",
-            "wikipedia.summary",
         ]
     }
 
