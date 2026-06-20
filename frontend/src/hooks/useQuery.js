@@ -24,13 +24,20 @@ export function useQuery() {
     const startedAt = performance.now();
 
     try {
+      if (import.meta.env.PROD && !API_URL) {
+        throw new Error("Missing VITE_API_URL on frontend deployment");
+      }
+
       const response = await fetch(`${API_URL}/api/query`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query, max_sources: 5 }),
       });
 
-      if (!response.ok || !response.body) throw new Error("Query failed");
+      if (!response.ok || !response.body) {
+        const details = await response.text();
+        throw new Error(`Query failed (${response.status}): ${details.slice(0, 160)}`);
+      }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
