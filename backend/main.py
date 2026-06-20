@@ -28,6 +28,11 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+def root() -> dict:
+    return {"service": "WebMind Agent API", "health": "/api/health"}
+
+
 @app.get("/api/health")
 def health() -> dict:
     wire = WireClient()
