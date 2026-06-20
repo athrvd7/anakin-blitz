@@ -1,4 +1,5 @@
 # WebMind Agent
+
 Developer intelligence dashboard for researching tools, libraries, papers, and technical topics. Ask one plain-English question, watch the agent choose sources, stream live result cards, and read a synthesized verdict.
 ---
 <img width="1080" height="626" alt="p11" src="https://github.com/user-attachments/assets/8c87a687-99af-4453-9c8c-993207175550" />
