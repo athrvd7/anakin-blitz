@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,7 +18,10 @@ app = FastAPI(title="WebMind Agent")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        *(origin.strip() for origin in os.getenv("FRONTEND_ORIGIN", "").split(",") if origin.strip()),
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )

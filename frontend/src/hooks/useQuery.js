@@ -1,5 +1,6 @@
 import { useState, startTransition } from "react";
 
+const API_URL = import.meta.env.VITE_API_URL || "";
 const initialState = { thinking: [], results: [], verdict: null, loading: false, error: "", elapsed: 0 };
 
 function parseSse(text, onEvent) {
@@ -23,7 +24,7 @@ export function useQuery() {
     const startedAt = performance.now();
 
     try {
-      const response = await fetch("/api/query", {
+      const response = await fetch(`${API_URL}/api/query`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query, max_sources: 5 }),

@@ -28,6 +28,7 @@ Frontend:
 ```bash
 cd frontend
 npm install
+cp .env.example .env
 npm run dev
 ```
 
@@ -52,7 +53,46 @@ WIRE_ACTION_ARXIV_SEARCH=ax_search_papers
 SCRAPER_BASE_URL=https://api.anakin.io/v1/scrape
 ```
 
-`backend/.env` is ignored by git. Do not commit keys.
+Set this in `frontend/.env` for non-proxied local runs or deployed frontend:
+
+```env
+VITE_API_URL=http://localhost:8000
+```
+
+`backend/.env` and `frontend/.env` are ignored by git. Do not commit keys.
+
+## Railway Deploy
+
+Create one Railway project with two services from the same GitHub repo.
+
+Backend service:
+
+- Root directory: `backend`
+- Railway uses `backend/railway.json`
+- Generate a Railway domain after deploy
+- Add the backend env vars from `.env.example`
+- Set `FRONTEND_ORIGIN` after frontend deploy, for example:
+
+```env
+FRONTEND_ORIGIN=https://your-frontend.up.railway.app
+```
+
+Frontend service:
+
+- Root directory: `frontend`
+- Railway uses `frontend/railway.json`
+- Add:
+
+```env
+VITE_API_URL=https://your-backend.up.railway.app
+```
+
+Deploy order:
+
+1. Deploy backend and generate its domain.
+2. Deploy frontend with `VITE_API_URL` set to the backend domain.
+3. Set backend `FRONTEND_ORIGIN` to the frontend domain.
+4. Redeploy backend.
 
 ## Useful Checks
 
