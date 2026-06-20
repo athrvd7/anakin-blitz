@@ -28,7 +28,8 @@ export function useQuery() {
         throw new Error("Missing VITE_API_URL on frontend deployment");
       }
 
-      const response = await fetch(`${API_URL}/api/query`, {
+      const endpoint = `${API_URL}/api/query`;
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query, max_sources: 5 }),
@@ -36,7 +37,7 @@ export function useQuery() {
 
       if (!response.ok || !response.body) {
         const details = await response.text();
-        throw new Error(`Query failed (${response.status}): ${details.slice(0, 160)}`);
+        throw new Error(`Query failed (${response.status}) at ${endpoint}: ${details.slice(0, 160)}`);
       }
 
       const reader = response.body.getReader();
