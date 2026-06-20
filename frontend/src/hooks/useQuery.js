@@ -1,6 +1,6 @@
 import { useState, startTransition } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "";
+const API_URL = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 const initialState = { thinking: [], results: [], verdict: null, loading: false, error: "", elapsed: 0 };
 
 function parseSse(text, onEvent) {

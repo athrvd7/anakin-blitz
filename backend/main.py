@@ -22,6 +22,7 @@ app.add_middleware(
         "http://localhost:5173",
         *(origin.strip() for origin in os.getenv("FRONTEND_ORIGIN", "").split(",") if origin.strip()),
     ],
+    allow_origin_regex=r"https://.*\.up\.railway\.app",
     allow_methods=["*"],
     allow_headers=["*"],
 )
